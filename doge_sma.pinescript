@@ -1,0 +1,28 @@
+//@version=4
+strategy("Doge SMA", overlay=true, initial_capital=25, default_qty_type=strategy.percent_of_equity, default_qty_value=100)
+
+start_date = input(title="Start Date", type=input.integer, defval=4, minval=1, maxval=31)
+start_month = input(title="Start Month", type=input.integer, defval=9, minval=1, maxval=12)
+start_year = input(title="Start Year", type=input.integer, defval=2020)
+end_date = input(title="End Date", type=input.integer, defval=6, minval=1, maxval=31)
+end_month = input(title="End Month", type=input.integer, defval=9, minval=1, maxval=12)
+end_year = input(title="End Year", type=input.integer, defval=2020)
+     
+between_dates = (time >= timestamp(start_year, start_month, start_date, 7, 0)) and (time < timestamp(end_year, end_month, end_date, 23, 59))
+    
+fast_ma_period = input(title="Fast MA", type=input.integer, defval=2)
+slow_ma_period = input(title="Slow MA", type=input.integer, defval=5)
+
+fast_ma = sma(close, fast_ma_period)
+slow_ma = sma(close, slow_ma_period)
+
+plot(fast_ma, color=color.green, linewidth=1)
+plot(slow_ma, color=color.yellow, linewidth=3)
+
+buy_condition = crossover(fast_ma, slow_ma)
+sell_condition = crossunder(fast_ma, slow_ma)
+
+if between_dates
+    strategy.entry("doge door", strategy.long, when=buy_condition)
+
+strategy.close("doge door",  when=sell_condition)

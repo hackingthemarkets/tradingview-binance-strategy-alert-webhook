@@ -1,0 +1,25 @@
+{
+    "passphrase": "abcdefgh",
+    "time": "2020-09-06T01:44:17Z",
+    "exchange": "BINANCE",
+    "ticker": "DOGEUSDT",
+    "bar": {
+        "time": "2020-09-06T01:43:00Z",
+        "open": 0.002748,
+        "high": 0.0027486,
+        "low": 0.002748,
+        "close": 0.0027486,
+        "volume": 150177
+    },
+    "strategy": {
+        "position_size": 10000,
+        "order_action": "buy",
+        "order_contracts": 10000,
+        "order_price": 0.0027451,
+        "order_id": "doge door",
+        "market_position": "long",
+        "market_position_size": 10000,
+        "prev_market_position": "flat",
+        "prev_market_position_size": 0
+    }
+}
