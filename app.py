@@ -1,21 +1,8 @@
 import json, config
 from flask import Flask, request, jsonify, render_template
-from binance.client import Client
-from binance.enums import *
+from response import order,usdtBalance,positions
 
 app = Flask(__name__)
-
-client = Client(config.API_KEY, config.API_SECRET, tld='us')
-
-def order(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):
-    try:
-        print(f"sending order {order_type} - {side} {quantity} {symbol}")
-        order = client.create_order(symbol=symbol, side=side, type=order_type, quantity=quantity)
-    except Exception as e:
-        print("an exception occured - {}".format(e))
-        return False
-
-    return order
 
 @app.route('/')
 def welcome():
@@ -23,18 +10,30 @@ def welcome():
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
-    #print(request.data)
+    # print(request.data)
     data = json.loads(request.data)
-    
+
     if data['passphrase'] != config.WEBHOOK_PASSPHRASE:
         return {
             "code": "error",
             "message": "Nice try, invalid passphrase"
         }
 
-    side = data['strategy']['order_action'].upper()
-    quantity = data['strategy']['order_contracts']
-    order_response = order(side, quantity, "DOGEUSD")
+    symbol=data['ticker'][0:-8]+"/USDT"
+    side = data['strategy']['order_action']
+    price=data['strategy']['order_price']
+    amount = usdtBalance()/price
+
+    if(positions(symbol)):
+        position=positions(symbol)
+        existSide='buy' if(position['side'])=='long' else 'sell'
+        if(existSide!=side):
+            amount=position['contracts']
+            order_response = order(symbol, side,amount, price)
+
+        amount =usdtBalance()
+
+    order_response = order(symbol, side,amount, price)
 
     if order_response:
         return {

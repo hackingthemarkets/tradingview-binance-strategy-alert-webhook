@@ -1,0 +1,8 @@
+{
+  "passphrase": "yayabot0214",
+  "ticker": "ETHUSDTPERP",
+  "strategy": {
+    "order_action": "sell",
+    "order_price": 1612.64
+  }
+}
